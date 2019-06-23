@@ -42,6 +42,6 @@ for subdir in subdirs:
 
             if args.delete:
                 print('---- Deleting old file: ' + str(file))
-                # os.remove(file)
+                os.remove(file)
             else:
                 print('--- Old file: ' + str(file))
