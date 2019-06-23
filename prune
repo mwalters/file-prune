@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+
+import os
+import argparse
+from pathlib import Path
+
+defaultKeep = 30
+
+parser = argparse.ArgumentParser(description='Identify and optionally remove files from subdirectories, keeping them pruned to a certain number of files.  Oldest files are deleted first.')
+parser.add_argument(
+    "--keep",
+    "-k",
+    type=int,
+    default=defaultKeep,
+    help='Number (integer) of files to keep; defaults to ' + str(defaultKeep)
+)
+parser.add_argument(
+    '--delete',
+    '-d',
+    default=False,
+    action='store_true',
+    help='Permanently delete old files that are discovered'
+)
+args = parser.parse_args()
+
+subdirs = os.listdir('./')
+print('Processing subdirs')
+
+for subdir in subdirs:
+
+    if os.path.isdir(subdir):
+        print()
+        print('- Directory: ' + subdir)
+
+        files = sorted(Path(subdir).iterdir(), key=lambda f: f.stat().st_mtime)
+        files.reverse();
+
+        if len(files) == 1: print('-- There is ' + str(len(files)) + ' file')
+        if len(files) > 1: print('-- There are ' + str(len(files)) + ' files')
+
+        for file in files[args.keep:]:
+
+            if args.delete:
+                print('---- Deleting old file: ' + str(file))
+                # os.remove(file)
+            else:
+                print('--- Old file: ' + str(file))
